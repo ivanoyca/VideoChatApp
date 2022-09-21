@@ -5,7 +5,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -15,13 +17,19 @@ import android.util.Base64;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chatapp.LocaleHelper;
+import com.example.chatapp.R;
 import com.example.chatapp.databinding.ActivitySignUpBinding;
 import com.example.chatapp.utilities.Constants;
 import com.example.chatapp.utilities.PreferenceManager;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +47,13 @@ public class SignUpActivity extends AppCompatActivity {
     private String encodedImage;
     FirebaseAuth fAuth;
 
+    Context context;
+    Resources resources;
+
+    TextView createNewAccountText, addImageText, signInTV;
+    EditText nameHint, emailHint, passwordHint, confirmPasswordHint;
+    Button signUpBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +63,43 @@ public class SignUpActivity extends AppCompatActivity {
         preferenceManager = new PreferenceManager(getApplicationContext());
         fAuth = FirebaseAuth.getInstance();
         setListeners();
+
+        createNewAccountText = binding.textCreateNewAccount;
+        addImageText = binding.textAddImage;
+        nameHint = binding.inputName;
+        emailHint = binding.inputEmail;
+        passwordHint = binding.inputPassword;
+        confirmPasswordHint = binding.inputConfirmPassword;
+        signUpBtn =  binding.buttonSignUp;
+        signInTV = binding.textSignIn;
+
+        if(LocaleHelper.getLanguage(SignUpActivity.this).equalsIgnoreCase("es")){
+            context = LocaleHelper.setLocale(SignUpActivity.this,"es");
+            resources =context.getResources();
+
+            createNewAccountText.setText(resources.getString(R.string.create_new_account));
+            addImageText.setText(resources.getString(R.string.add_image));
+            nameHint.setHint(resources.getString(R.string.name));
+            emailHint.setHint(resources.getString(R.string.email));
+            passwordHint.setHint(resources.getString(R.string.password));
+            confirmPasswordHint.setHint(resources.getString(R.string.confirm_password));
+            signUpBtn.setText(resources.getString(R.string.sign_up));
+            signInTV.setText(resources.getString(R.string.sign_in));
+
+        } else if (LocaleHelper.getLanguage(SignUpActivity.this).equalsIgnoreCase("en")){
+            context = LocaleHelper.setLocale(SignUpActivity.this,"en");
+            resources =context.getResources();
+
+            createNewAccountText.setText(resources.getString(R.string.create_new_account));
+            addImageText.setText(resources.getString(R.string.add_image));
+            nameHint.setHint(resources.getString(R.string.name));
+            emailHint.setHint(resources.getString(R.string.email));
+            passwordHint.setHint(resources.getString(R.string.password));
+            confirmPasswordHint.setHint(resources.getString(R.string.confirm_password));
+            signUpBtn.setText(resources.getString(R.string.sign_up));
+            signInTV.setText(resources.getString(R.string.sign_in));
+
+        }
     }
 
     private void setListeners() {
@@ -70,6 +122,30 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void signUp(){
         loading(true);
+        fAuth.createUserWithEmailAndPassword(binding.inputEmail.getText().toString(), binding.inputPassword.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    fAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>(){
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                showToast("Registered Successfully. Please Check Your Email.");
+                                startActivity(new Intent(getApplicationContext(), SignInActivity.class));
+                            } else {
+                                showToast(task.getException().getMessage());
+                            }
+                            loading(false);
+                        }
+                    });
+                } else {
+                    showToast(task.getException().getMessage());
+                }
+
+            }
+        });
+
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         HashMap<String, Object> user = new HashMap<>();
         user.put(Constants.KEY_NAME, binding.inputName.getText().toString());
@@ -77,58 +153,22 @@ public class SignUpActivity extends AppCompatActivity {
         user.put(Constants.KEY_PASSWORD, binding.inputPassword.getText().toString());
         user.put(Constants.KEY_IMAGE, encodedImage);
         database.collection(Constants.KEY_COLLECTION_USERS)
-                .add(user)
-                .addOnSuccessListener(documentReference -> {
-                    loading(false);
-                    preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
-                    preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
-                    preferenceManager.putString(Constants.KEY_NAME, binding.inputName.getText().toString());
-                    preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    //startActivity(intent);
+                    .add(user)
+                    .addOnSuccessListener(documentReference -> {
+                        preferenceManager.putBoolean(Constants.KEY_IS_SIGNED_IN, true);
+                        preferenceManager.putString(Constants.KEY_USER_ID, documentReference.getId());
+                        preferenceManager.putString(Constants.KEY_NAME, binding.inputName.getText().toString());
+                        preferenceManager.putString(Constants.KEY_IMAGE, encodedImage);
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-                    //Create Firebase Authentication User
-                    fAuth.createUserWithEmailAndPassword(binding.inputEmail.getText().toString(), binding.inputPassword.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult authResult) {
-                            fAuth.getCurrentUser().sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    showToast("Verify Email Address");
-                                }
-                            });
-                            startActivity(new Intent(getApplicationContext(), SignInActivity.class));
-
-                        }
-                    }) .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            showToast(e.getMessage());
-                        }
+                    })
+                    .addOnFailureListener(exception -> {
+                        loading(false);
+                        showToast(exception.getMessage());
                     });
-                })
-                .addOnFailureListener(exception -> {
-                    loading(false);
-                    showToast(exception.getMessage());
-                });
 
     }
-    /*
-    private void createFirebaseUser(){
-        fAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-            @Override
-            public void onSuccess(AuthResult authResult) {
-                startActivity(new Intent(getApplicationContext(), SignInActivity.class));
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                showToast(e.getMessage());
-            }
-        });
-    }
-     */
 
 
     //User Image

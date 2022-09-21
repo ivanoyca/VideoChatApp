@@ -17,6 +17,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/welcomeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_40sdp"
@@ -26,6 +27,7 @@
             android:textStyle="bold"/>
 
         <TextView
+            android:id="@+id/logInToContinueText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_4sdp"
@@ -84,6 +86,25 @@
             android:textColor="@color/primary"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            >
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/showLangDialog"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/select_language"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                app:cornerRadius="@dimen/_9sdp"
+                />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
