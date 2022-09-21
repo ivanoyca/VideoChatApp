@@ -7,10 +7,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.chatapp.databinding.ActivitySignInBinding;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class SignInActivity extends AppCompatActivity {
 
     private ActivitySignInBinding binding;
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,12 @@ public class SignInActivity extends AppCompatActivity {
         binding.textCreateNewAccount.setOnClickListener(view ->
                 startActivity(new Intent(getApplicationContext(), SignUpActivity.class)));
 
+    }
+
+    private void isVerified(){
+        if(!auth.getCurrentUser().isEmailVerified()){
+            showToast("Verify Your Email");
+        }
     }
 
     private void showToast(String message){
