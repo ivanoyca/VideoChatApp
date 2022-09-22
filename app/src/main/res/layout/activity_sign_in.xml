@@ -55,7 +55,7 @@
             android:id="@+id/inputPassword"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
-            android:layout_marginTop="@dimen/_40sdp"
+            android:layout_marginTop="@dimen/_20sdp"
             android:background="@drawable/background_input"
             android:hint="@string/password"
             android:imeOptions="actionDone"
@@ -87,24 +87,19 @@
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_50sdp"
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_16sdp"
             >
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/showLangDialog"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/select_language"
-                android:textSize="@dimen/_10ssp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                app:cornerRadius="@dimen/_9sdp"
-                />
-
-        </RelativeLayout>
+                android:layout_width="@dimen/_45sdp"
+                android:layout_height="@dimen/_50sdp"
+                app:cornerRadius="@dimen/_100sdp"
+                android:drawableLeft="@drawable/lang_icon_white"/>
+        </FrameLayout>
 
     </LinearLayout>
 

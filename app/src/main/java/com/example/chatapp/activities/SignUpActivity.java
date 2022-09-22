@@ -39,7 +39,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 
-
 public class SignUpActivity extends AppCompatActivity {
 
     private ActivitySignUpBinding binding;
@@ -62,8 +61,27 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         preferenceManager = new PreferenceManager(getApplicationContext());
         fAuth = FirebaseAuth.getInstance();
+        languageSelected();
         setListeners();
 
+
+    }
+
+    private void setListeners() {
+        binding.textSignIn.setOnClickListener(v -> onBackPressed());
+        binding.buttonSignUp.setOnClickListener(v -> {
+            if (isValidSignUpDetails()){
+                signUp();
+            }
+        });
+        binding.layoutImage.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            pickImage.launch(intent);
+        });
+    }
+
+    private void languageSelected(){
         createNewAccountText = binding.textCreateNewAccount;
         addImageText = binding.textAddImage;
         nameHint = binding.inputName;
@@ -100,20 +118,6 @@ public class SignUpActivity extends AppCompatActivity {
             signInTV.setText(resources.getString(R.string.sign_in));
 
         }
-    }
-
-    private void setListeners() {
-        binding.textSignIn.setOnClickListener(v -> onBackPressed());
-        binding.buttonSignUp.setOnClickListener(v -> {
-            if (isValidSignUpDetails()){
-                signUp();
-            }
-        });
-        binding.layoutImage.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            pickImage.launch(intent);
-        });
     }
 
     private void showToast(String message){

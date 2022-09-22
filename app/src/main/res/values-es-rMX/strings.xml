@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ChatApp</string>
+    <string name="app_name">VideoChatApp</string>
     <string name="email">Correo</string>
     <string name="password">Contraseña</string>
     <string name="sign_in">Inicio de Sesión</string>
@@ -12,4 +12,5 @@
     <string name="welcome">Bienvenido</string>
     <string name="login_to_continue">Inicia Sesión Para Continuar</string>
     <string name="select_language">Seleccionar Lenguaje</string>
+    <string name="hello_world">Hola Mundo!</string>
 </resources>
