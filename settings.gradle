@@ -16,3 +16,4 @@ include ':app'
 //        mavenCentral()
 //    }
 //}
+include ':admin_app'

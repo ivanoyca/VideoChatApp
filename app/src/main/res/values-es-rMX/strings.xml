@@ -13,4 +13,6 @@
     <string name="login_to_continue">Inicia Sesión Para Continuar</string>
     <string name="select_language">Seleccionar Lenguaje</string>
     <string name="hello_world">Hola Mundo!</string>
+    <string name="select_user">Seleccionar Usuario</string>
+    <string name="type_a_message">Escribe Un Mensaje</string>
 </resources>

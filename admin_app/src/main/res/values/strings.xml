@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Admin VideoChatApp</string>
+    <string name="create_new_admin_account">Create New Admin Account</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_in">Sign In</string>
+    <string name="log_in_to_continue">Log In To Continue</string>
+</resources>
